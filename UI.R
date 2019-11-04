@@ -4,7 +4,7 @@ library(shiny)
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Hello Shiny!"),
+  titlePanel("Imiona dzieci w Polsce w pierwszej polowie roku 2019"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -16,7 +16,7 @@ ui <- fluidPage(
       sliderInput(inputId = "bins",
                   label = "Number of bins:",
                   min = 1,
-                  max = 50,
+                  max = 2000,
                   value = 30)
       
     ),

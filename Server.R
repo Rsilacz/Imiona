@@ -10,13 +10,15 @@ server <- function(input, output) {
   #    re-executed when inputs (input$bins) change
   # 2. Its output type is a plot
   output$distPlot <- renderPlot({
-    
-    x    <- faithful$waiting
+    cf <- file.choose()
+    x    <- read.csv(cf, TRUE, sep = ",", nrows = 20)
+    print(x)
+    hist(x)
     bins <- seq(min(x), max(x), length.out = input$bins + 1)
     
-    hist(x, breaks = bins, col = "#75AADB", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
+    #hist(x, breaks = bins, col = "#75AADB", border = "white",
+     #    xlab = "Waiting time to next eruption (in mins)",
+      #   main = "Histogram of waiting times")
     
   })
   
