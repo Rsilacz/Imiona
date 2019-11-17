@@ -10,27 +10,26 @@ server <- function(input, output) {
   #    re-executed when inputs (input$bins) change
   # 2. Its output type is a plot
   output$distPlot <- renderPlot({
-    cf <- file.choose()
-    x    <- read.csv(cf, TRUE, sep = ",", nrows = 20)
-    y <- x[[2]]
-    z <- x[[1]]
-    print(z)
+    #cf <- file.choose()
+    #x    <- read.csv(cf, TRUE, sep = ",",encoding = "UTF-8", nrows = 20)
+   # y <- x[[2]]
+    #z <- x[[1]]
+    #print(z)
     
-    #counts <- table(y)
-    #barplot(counts, main="Car Distribution",
-     #       xlab="Number of Gears")
-    #print(counts)
+    #slices <- y
+    #lbls <- z
     
-    
-    
-    slices <- y
-    lbls <- z
-    
-    pie(slices, labels = lbls, main="Pie Chart of Names")
-  
-    
-      
-     
+    #(slices, labels = lbls, main="Pie Chart of Names")
+    #Imie Andrzej w latach 2000-2018
+    chfi <- file.choose()
+    xx <- read.csv(chfi, TRUE, sep = ",", encoding = "UTF-8")
+    Andrzej <- xx[grep("ANDRZEJ", xx[[2]]),]
+    #print(Andrzej)
+    AndrzejX <- Andrzej[[3]]
+    AndrzejY <- Andrzej[[1]]
+    print(AndrzejX)
+    print (AndrzejY)
+    barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,800), xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion", main = "Imie Andrzej w latach 2000-2018")
     
     
     
