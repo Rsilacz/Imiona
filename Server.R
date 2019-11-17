@@ -12,9 +12,34 @@ server <- function(input, output) {
   output$distPlot <- renderPlot({
     cf <- file.choose()
     x    <- read.csv(cf, TRUE, sep = ",", nrows = 20)
-    print(x)
-    hist(x)
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    y <- x[[2]]
+    z <- x[[1]]
+    print(z)
+    
+    #counts <- table(y)
+    #barplot(counts, main="Car Distribution",
+     #       xlab="Number of Gears")
+    #print(counts)
+    
+    
+    
+    slices <- y
+    lbls <- z
+    
+    pie(slices, labels = lbls, main="Pie Chart of Names")
+  
+    
+      
+     
+    
+    
+    
+    
+    
+    
+    
+    #hist(y)
+    #bins <- seq(min(x), max(x), length.out = input$bins + 1)
     
     #hist(x, breaks = bins, col = "#75AADB", border = "white",
      #    xlab = "Waiting time to next eruption (in mins)",
