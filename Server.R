@@ -1,6 +1,8 @@
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   
+  
+  
   # Histogram of the Old Faithful Geyser Data ----
   # with requested number of bins
   # This expression that generates a histogram is wrapped in a call
@@ -23,13 +25,13 @@ server <- function(input, output) {
     #Imie Andrzej w latach 2000-2018
     chfi <- file.choose()
     xx <- read.csv(chfi, TRUE, sep = ",", encoding = "UTF-8")
-    Andrzej <- xx[grep("ANDRZEJ", xx[[2]]),]
+    Andrzej <- xx[grep(input$imie, xx[[2]]),]
     #print(Andrzej)
     AndrzejX <- Andrzej[[3]]
     AndrzejY <- Andrzej[[1]]
-    print(AndrzejX)
-    print (AndrzejY)
-    barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,800), xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion", main = "Imie Andrzej w latach 2000-2018")
+    #print(AndrzejX)
+    #print (AndrzejY)
+    barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,2000), xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion", main = paste("Imie ",input$imie," w latach 2000-2018"))
     
     
     
