@@ -23,8 +23,8 @@ server <- function(input, output) {
     
     #(slices, labels = lbls, main="Pie Chart of Names")
     #Imie Andrzej w latach 2000-2018
-    chfi <- file.choose()
-    xx <- read.csv(chfi, TRUE, sep = ",", encoding = "UTF-8")
+    #chfi <- file.choose()
+    xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
     Andrzej <- xx[grep(input$imie, xx[[2]]),]
     #print(Andrzej)
     AndrzejX <- Andrzej[[3]]
@@ -34,7 +34,7 @@ server <- function(input, output) {
     barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,2000), xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion", main = paste("Imie ",input$imie," w latach 2000-2018"))
     
     
-    
+    output$wybranyRok <- renderPrint({ input$wyborRoku })
     
     
     
