@@ -12,6 +12,7 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
       
+      textInput("imie","Wpisz imie",value = "ANDRZEJ")
       # Input: Slider for the number of bins ----
      # sliderInput(inputId = "bins",
        #           label = "Number of bins:",
@@ -23,7 +24,7 @@ ui <- fluidPage(
     
     # Main panel for displaying outputs ----
     mainPanel(
-      
+      textOutput("text"),
       # Output: Histogram ----
       plotOutput(outputId = "distPlot")
       
