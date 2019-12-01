@@ -25,13 +25,18 @@ server <- function(input, output) {
     #Imie Andrzej w latach 2000-2018
     #chfi <- file.choose()
     xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
-    Andrzej <- xx[grep(input$imie, xx[[2]]),]
-    #print(Andrzej)
+    X <- paste("^",input$imie,"$",sep = "")
+    
+    Andrzej <- xx[grep(X, xx[[2]]),]
+    
+    Y<-max(Andrzej[[3]])
+    print(Y)
+    
     AndrzejX <- Andrzej[[3]]
     AndrzejY <- Andrzej[[1]]
     #print(AndrzejX)
     #print (AndrzejY)
-    barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,2000), xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion", main = paste("Imie ",input$imie," w latach 2000-2018"))
+    barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+100), xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion", main = paste("Imie ",input$imie," w latach 2000-2018"))
     
     
     output$wybranyRok <- renderPrint({ input$wyborRoku })
