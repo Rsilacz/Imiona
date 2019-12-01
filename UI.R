@@ -31,7 +31,6 @@ ui <- fluidPage(
                  fluidRow(
                    column(8,textInput("imie","Wpisz imie",value = "ANDRZEJ")),
                    column(9,actionButton("go", "PLOT")),
-                   column(10,textOutput("out")),
                    column(12,plotOutput(outputId = "distPlot")))),
        tabPanel("Top 10",
                  fluidRow(
@@ -39,7 +38,11 @@ ui <- fluidPage(
                    column(4,tableOutput(outputId = "Top10M")),
                    column(5,tableOutput(outputId = "Top10K"))
                    )),
-        tabPanel("Rok",wyborroku )
+        tabPanel("Rok",
+                 fluidRow(
+                  column(4,wyborroku),
+                  column(12,plotOutput(outputId = "pie")),
+                 ))
       ),
       textOutput("text")
       # Output: Histogram ----
