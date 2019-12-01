@@ -3,13 +3,6 @@ server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
 
   
-    output$out <- renderText({
-      input$go
-      isolate(input$imie)
-      
-      
-      })
-
   
   
   
@@ -19,7 +12,7 @@ server <- function(input, output) {
   
   output$distPlot <- renderPlot({
     input$go
-    isolate(X <- paste("^",input$imie,"$",sep = ""))
+    isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
     
     Andrzej <- xx[grep(X, xx[[2]]),]
     
@@ -31,7 +24,7 @@ server <- function(input, output) {
 
     isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+500),
                     xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion",
-                    main = paste("Imie ",input$imie," w latach 2000-2018")))
+                    main = paste("Imie ",toupper(input$imie)," w latach 2000-2018")))
     
     
     output$wybranyRok <- renderPrint({ input$wyborRoku })
