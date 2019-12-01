@@ -54,7 +54,7 @@ server <- function(input, output) {
   
   output$pie <- renderPlot({
     
-    zmienna <- xx[grep(input$wyborRoku,xx[[1]]),]
+    zmienna <- xx[grep(input$Rok,xx[[1]]),]
     man <- zmienna[grep("M", zmienna[[4]]),]
     wman <- zmienna[grep("K", zmienna[[4]]),]
     tmp1 <- man[3:3]
@@ -67,11 +67,15 @@ server <- function(input, output) {
     
     
     slices <- c(Lman, LWman)
+    pct <- round(slices/sum(slices)*100)
     lbls <- c("Mezczyzni", "Kobiety")
+    lbls <- paste(lbls, pct) 
+    lbls <- paste(lbls,"%",sep="") 
     pie(slices, labels = lbls, main="M vs K",col = rainbow(length(slices)))
     
     
   })
 
+  
   
 }
