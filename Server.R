@@ -1,6 +1,6 @@
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
-  
+  xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
 
   
     output$out <- renderText({
@@ -19,7 +19,6 @@ server <- function(input, output) {
   
   output$distPlot <- renderPlot({
     input$go
-    xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
     isolate(X <- paste("^",input$imie,"$",sep = ""))
     
     Andrzej <- xx[grep(X, xx[[2]]),]
@@ -41,6 +40,22 @@ server <- function(input, output) {
     
   
     
+  })
+  
+   output$Top10M<- renderTable({
+    wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
+    wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
+   #print(wybractop10)
+    to10M<-wybractop10M[1:10,]
+    print(to10M)
+  })
+  
+  output$Top10K<- renderTable({
+    wybractop10K<-xx[grep(input$wyborRoku, xx[[1]]),]
+    wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
+    #print(wybractop10)
+    to10K<-wybractop10K[1:10,]
+    print(to10K)
   })
   
 }
