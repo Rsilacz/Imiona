@@ -75,6 +75,24 @@ server <- function(input, output) {
     
     
   })
+  
+  output$trend <- renderPlot({
+    
+    X <- paste("^",toupper(input$imie),"$",sep = "")
+    wybraneImie <- xx[grep(X, xx[[2]]),]
+    wartosciWybranegoImienia <- wybraneImie[[3]]
+    srednia <- mean(wartosciWybranegoImienia)
+    wariancja <- var(wartosciWybranegoImienia)
+    odchylenie <- sd(wartosciWybranegoImienia)
+    print(srednia)
+    print(wariancja)
+    print(odchylenie)
+    wybraneImieX <- wybraneImie[[1]]
+    wybraneImieY <- wybraneImie[[3]]
+    plot(wybraneImieX, wybraneImieY, type = "b")
+    
+    
+  })
 
   
   
