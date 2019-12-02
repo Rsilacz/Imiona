@@ -67,7 +67,7 @@ server <- function(input, output) {
     
     
     slices <- c(Lman, LWman)
-    pct <- round(slices/sum(slices)*100)
+    pct <- round(slices/sum(slices)*100,digits = 2)
     lbls <- c("Mezczyzni", "Kobiety")
     lbls <- paste(lbls, pct) 
     lbls <- paste(lbls,"%",sep="") 
