@@ -103,7 +103,7 @@ server <- function(input, output) {
   
   output$trend <- renderPlot({
     
-    X <- paste("^",toupper(input$imie),"$",sep = "")
+    X <- paste("^",toupper(input$imieT),"$",sep = "")
     wybraneImie <- xx[grep(X, xx[[2]]),]
     wartosciWybranegoImienia <- wybraneImie[[3]]
     srednia <- mean(wartosciWybranegoImienia)
@@ -123,13 +123,13 @@ server <- function(input, output) {
     plot(wybraneImieX, wybraneImieY, type = "b")
     obliczonyTrend<-wyliczTrend(wybraneImie)
     if(obliczonyTrend < 0){
-      
+      output$trendtxt <- renderText("Trend maleje")
     }
     if(obliczonyTrend == 0){
-      
+      output$trendtxt <- renderText("Trend jest staly")
     }
     if(obliczonyTrend > 0){
-      
+      output$trendtxt <- renderText("Trend rosnie")
     }
     #plot()
     
