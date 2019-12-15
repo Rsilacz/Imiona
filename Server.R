@@ -2,7 +2,32 @@
 server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
 
-  
+  wyliczTrend<-function(wybraneImie){
+    wybraneImieX <- wybraneImie[[1]]
+    wybraneImieY <- wybraneImie[[3]]
+    liczbaWystapien<-length(wybraneImie)
+    zrobLP=1999
+    t=wybraneImieX-zrobLP
+    Y=wybraneImieY
+    sredniaT<-mean(t)
+    sredniaY<-mean(Y)
+    #print(t)
+    #print(sredniaT)
+    #print(sredniaY)
+    tMinusSrednia<-t-sredniaT
+    YMinusSrednia<-Y-sredniaY
+    #print(tMinusSrednia)
+    #print(YMinusSrednia)
+    tMSxYMS<-tMinusSrednia*YMinusSrednia
+    tMSxtMS<-tMinusSrednia*tMinusSrednia
+    print(tMSxYMS)
+    print(tMSxtMS)
+    aLicznik<-sum(tMSxYMS)
+    aMianownik<-sum(tMSxtMS)
+    a=aLicznik/aMianownik
+    print(a)
+    return(a)
+  }
   
   
   
@@ -17,7 +42,7 @@ server <- function(input, output) {
     Andrzej <- xx[grep(X, xx[[2]]),]
     
     Y<-max(Andrzej[[3]])
-    print(Y)
+    #print(Y)
     
     AndrzejX <- Andrzej[[3]]
     AndrzejY <- Andrzej[[1]]
@@ -40,7 +65,7 @@ server <- function(input, output) {
     wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
    #print(wybractop10)
     to10M<-wybractop10M[1:10,]
-    print(to10M)
+    #print(to10M)
   })
   
   output$Top10K<- renderTable({
@@ -48,7 +73,7 @@ server <- function(input, output) {
     wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
     #print(wybractop10)
     to10K<-wybractop10K[1:10,]
-    print(to10K)
+    #print(to10K)
   })
   
   
@@ -84,13 +109,29 @@ server <- function(input, output) {
     srednia <- mean(wartosciWybranegoImienia)
     wariancja <- var(wartosciWybranegoImienia)
     odchylenie <- sd(wartosciWybranegoImienia)
-    print(srednia)
-    print(wariancja)
-    print(odchylenie)
+    #print("srednia")
+    #print(srednia)
+    #print("wariancja")
+    #print(wariancja)
+    #print("odchylenie")
+    #print(odchylenie)
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
+    print(wybraneImieX)
+    print(wybraneImieY)
+    print(wybraneImie)
     plot(wybraneImieX, wybraneImieY, type = "b")
-    
+    obliczonyTrend<-wyliczTrend(wybraneImie)
+    if(obliczonyTrend < 0){
+      
+    }
+    if(obliczonyTrend == 0){
+      
+    }
+    if(obliczonyTrend > 0){
+      
+    }
+    #plot()
     
   })
 
