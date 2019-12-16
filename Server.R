@@ -134,6 +134,13 @@ server <- function(input, output) {
     #plot()
     
   })
+  
+  output$`mapa polski`<-renderPlot({
+    poland<-getData("GADM",country="POL",level=1)
+    plot(poland,xlim=c(17.246255,19.756632),ylim=c(53.780936,52.338194),col="yellow",border="gray40",axes=T,las=1)
+    invisible(text(getSpPPolygonsLabptSlots(poland),labels=as.character(substr(poland$HASC_1,4,5)), 
+                   cex=0.75, col="black",font=2))
+  })
 
   
   
