@@ -35,6 +35,7 @@ ui <- fluidPage(
                  fluidRow(
                    column(8,textInput("imie","Wpisz imie",value = "ANDRZEJ")),
                    column(9,actionButton("go", "PLOT")),
+                   column(3,selectInput(inputId = "wyborWoj", label = "Wybierz Woj:", choices = list("Polska" = 1, "Dolnoslakie" = 2, "Kujawsko-pomorskie" = 3, "Lubelskie" = 4, "Lubuskie" = 5, "Lodzkie" = 6, "Malopolskie" = 7, "Mazowieckie" = 8, "Opolskie" = 9, "Podkarpackie" = 10, "Podlaskie" = 11, "Pomorskie" = 12, "Slaskie" = 13, "Swietokrzyskie" = 14, "Warminsko-mazurskie" = 15, "Wielkopolskie" = 16, "Zachodniopomorskie" = 17) , selected = 1, multiple = FALSE, selectize = FALSE)),
                    column(12,plotOutput(outputId = "distPlot")))),
        tabPanel("Top 10",
                  fluidRow(
