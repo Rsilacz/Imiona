@@ -151,7 +151,7 @@ server <- function(input, output) {
   #})
   
   output$mapapolski<-renderLeaflet({
-    granice<-readOGR( dsn = )
+    granice<-readOGR( dsn = 'Wojewodztwa\\Wojewodztwa.shp')
    poland<-leaflet() %>%
      addTiles() %>%
      setView(19.313,52.278, zoom = 6) %>%
