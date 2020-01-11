@@ -1,8 +1,11 @@
 library(shiny)
 library(raster)
-library(maps)
-library(mapdata)
-
+#library(maps)
+#library(mapdata)
+library(OpenStreetMap)
+library(ggplot2)
+library(leaflet)
+library(osmdata)
 
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
@@ -58,7 +61,7 @@ ui <- fluidPage(
        ),
        tabPanel("Mapa",
                 fluidRow(
-                  column(12,plotOutput(outputId = "mapa polski", width = 750, height = 750))
+                  column(12,leafletOutput(outputId = "mapapolski", width = 750, height = 750))
                 ))
       ),
       textOutput("text")
