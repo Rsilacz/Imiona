@@ -135,13 +135,43 @@ server <- function(input, output) {
     
   })
   
-  output$`mapa polski`<-renderPlot({
-    poland<-getData("GADM",country="POL",level=1)
-    plot(poland,xlim=c(17.246255,19.756632),ylim=c(53.780936,52.338194),col="yellow",border="gray40",axes=T,las=1)
-    invisible(text(getSpPPolygonsLabptSlots(poland),labels=as.character(substr(poland$HASC_1,4,5)), 
-                   cex=0.75, col="black",font=2))
-  })
+  #output$`mapa polski`<-renderPlot({
+    #poland<-getData("GADM",country="POL",level=1)
+    #plot(poland,xlim=c(17.246255,19.756632),ylim=c(53.780936,52.338194),col="yellow",border="gray40",axes=T,las=1)
+    #invisible(text(getSpPPolygonsLabptSlots(poland),labels=as.character(substr(poland$HASC_1,4,5)), 
+     #              cex=0.75, col="black",font=2))
+  #})
 
+  #output$`mapa polski`<-renderPlot({
+   # poland<-openmap(c(53.91,14.22), c(49.61,24.23))
+    #plot.OpenStreetMap(poland, removeMargin = FALSE)
+   # data(states)
+    #plot.OpenStreetMap(states, add=TRUE)
+   # plot(poland)
+  #})
   
+  output$mapapolski<-renderLeaflet({
+    granice<-readOGR( dsn = 'C:\\Users\\super\\Downloads\\Wojewodztwa\\Wojewodztwa.shp')
+   poland<-leaflet() %>%
+     addTiles() %>%
+     setView(19.313,52.278, zoom = 6) %>%
+     addPolygons(data = granice, fillColor = "green", highlight = highlightOptions(weight = 5, color = "red",
+                                                                                   fillOpacity = 0.6,
+                                                                                 bringToFront = TRUE))
+   
+   #poland<-addPolygons(data=granice)
+   #writeOGR(granice, 'pola')
+  })
+  
+  observe({
+    click = input$mapapolski_shape_click
+    if(is.null(click))
+      return()
+    else
+      leafletProxy("mapapolski") %>%
+      setView(lng = click$lng, lat = click$lat, zoom = 8) %>%
+      clearMarkers() %>%
+      addMarkers(lng = click$lng, lat = click$lat)
+  })
   
 }
