@@ -151,12 +151,20 @@ server <- function(input, output) {
   #})
   
   output$mapapolski<-renderLeaflet({
-    granice<-readOGR( dsn = 'Wojewodztwa\\Wojewodztwa.shp')
+   # granice<-readOGR( dsn = 'Wojewodztwa\\', layer = "Wojewodztwa.shp")
+   # granice@data$id=row.names(granice@data)
+   # wojewodztwacsv<-read.csv()
+    #dane<-read.xlsx('imiona_2017.xlsx', sheetName = 'kujawsko-pomorskie', header = TRUE, encoding = "UTF-8")
+    daneAndrzej<-read.xlsx('andrzej.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+    granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+    skala<-c(2,10,20,40,50,100,200,300,600)
+    skalaAndrzej<-c(4,8,12,16,24,32,48,64)
+    pal<-colorBin("Blues", domain = daneAndrzej$Andrzej, bins = skalaAndrzej)
    poland<-leaflet() %>%
      addTiles() %>%
      setView(19.313,52.278, zoom = 6) %>%
-     addPolygons(data = granice, fillColor = "green", highlight = highlightOptions(weight = 5, color = "red",
-                                                                                   fillOpacity = 0.6,
+     addPolygons(data = granice, fillColor = pal(daneAndrzej$Andrzej), fillOpacity = 0.8, color = "white", smoothFactor = 0.5, highlight = highlightOptions(weight = 5, color = "red",
+                                                                                   fillOpacity = 0.5,
                                                                                  bringToFront = TRUE))
    
    #poland<-addPolygons(data=granice)
