@@ -6,7 +6,9 @@ library(OpenStreetMap)
 library(ggplot2)
 library(leaflet)
 library(osmdata)
-
+library(rgdal)
+library(sf)
+library(xlsx)
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
   
