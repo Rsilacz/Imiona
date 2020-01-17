@@ -1,7 +1,9 @@
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
-
+  daneImiona<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+  
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
@@ -29,35 +31,18 @@ server <- function(input, output) {
     return(a)
   }
   
-  
-  
-  
- 
-  
-  
   output$distPlot <- renderPlot({
     input$go
     isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
-    
     Andrzej <- xx[grep(X, xx[[2]]),]
-    
     Y<-max(Andrzej[[3]])
     #print(Y)
-    
     AndrzejX <- Andrzej[[3]]
     AndrzejY <- Andrzej[[1]]
-
     isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+500),
                     xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion",
                     main = paste("Imie ",toupper(input$imie)," w latach 2000-2018")))
-    
-    
     output$wybranyRok <- renderPrint({ input$wyborRoku })
-    
-    
-    
-  
-    
   })
   
    output$Top10M<- renderTable({
@@ -76,10 +61,8 @@ server <- function(input, output) {
     #print(to10K)
   })
   
-  
   output$pie <- renderPlot({
-    
-    zmienna <- xx[grep(input$Rok,xx[[1]]),]
+    zmienna <- xx[grep(input$wyborRoku,xx[[1]]),]
     man <- zmienna[grep("M", zmienna[[4]]),]
     wman <- zmienna[grep("K", zmienna[[4]]),]
     tmp1 <- man[3:3]
@@ -88,21 +71,15 @@ server <- function(input, output) {
     LWman <-colSums(tmp2)
     print(Lman)
     print(LWman)
-    
-    
-    
     slices <- c(Lman, LWman)
     pct <- round(slices/sum(slices)*100,digits = 2)
     lbls <- c("Mezczyzni", "Kobiety")
     lbls <- paste(lbls, pct) 
     lbls <- paste(lbls,"%",sep="") 
-    pie(slices, labels = lbls, main="M vs K",col = rainbow(length(slices)))
-    
-    
+    pie3D(slices, labels = lbls, main="M vs K",col = rainbow(length(slices)))
   })
   
   output$trend <- renderPlot({
-    
     X <- paste("^",toupper(input$imieT),"$",sep = "")
     wybraneImie <- xx[grep(X, xx[[2]]),]
     wartosciWybranegoImienia <- wybraneImie[[3]]
@@ -132,43 +109,29 @@ server <- function(input, output) {
       output$trendtxt <- renderText("Trend rosnie")
     }
     #plot()
-    
   })
   
-  #output$`mapa polski`<-renderPlot({
-    #poland<-getData("GADM",country="POL",level=1)
-    #plot(poland,xlim=c(17.246255,19.756632),ylim=c(53.780936,52.338194),col="yellow",border="gray40",axes=T,las=1)
-    #invisible(text(getSpPPolygonsLabptSlots(poland),labels=as.character(substr(poland$HASC_1,4,5)), 
-     #              cex=0.75, col="black",font=2))
-  #})
-
-  #output$`mapa polski`<-renderPlot({
-   # poland<-openmap(c(53.91,14.22), c(49.61,24.23))
-    #plot.OpenStreetMap(poland, removeMargin = FALSE)
-   # data(states)
-    #plot.OpenStreetMap(states, add=TRUE)
-   # plot(poland)
-  #})
-  
   output$mapapolski<-renderLeaflet({
-   # granice<-readOGR( dsn = 'Wojewodztwa\\', layer = "Wojewodztwa.shp")
-   # granice@data$id=row.names(granice@data)
-   # wojewodztwacsv<-read.csv()
-    #dane<-read.xlsx('imiona_2017.xlsx', sheetName = 'kujawsko-pomorskie', header = TRUE, encoding = "UTF-8")
-    daneAndrzej<-read.xlsx('andrzej.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
-    granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+    input$goM
+   isolate(X <- paste(toupper(input$imieM))) 
+   # X = "ANDRZEJ"
+    #wybraneImie <- daneImiona[grep("MARCIN", daneImiona[[1]]),]
+    wybraneImie2 <- select(daneImiona, "ANDRZEJ")
+    wybraneImie3 <- daneImiona[grep(X, names(daneImiona), value = TRUE)]
+    colnames(wybraneImie3) <-("wybrane_imie")
     skala<-c(2,10,20,40,50,100,200,300,600)
-    skalaAndrzej<-c(4,8,12,16,24,32,48,64)
-    pal<-colorBin("Blues", domain = daneAndrzej$Andrzej, bins = skalaAndrzej)
-   poland<-leaflet() %>%
+    skalaAndrzej<-c(2,4,8,16,32,64,128,256,512,1024,2048)
+    pal<-colorBin("Spectral", domain = wybraneImie3$wybrane_imie, bins = skalaAndrzej)
+    etykiety<-(wybraneImie3$wybrane_imie)
+  isolate(poland<-leaflet() %>%
      addTiles() %>%
      setView(19.313,52.278, zoom = 6) %>%
-     addPolygons(data = granice, fillColor = pal(daneAndrzej$Andrzej), fillOpacity = 0.8, color = "white", smoothFactor = 0.5, highlight = highlightOptions(weight = 5, color = "red",
+     addPolygons(data = granice, fillColor = pal(wybraneImie3$wybrane_imie), fillOpacity = 0.8, color = "white",
+                 smoothFactor = 1, highlight = highlightOptions(weight = 5, color = "red",
                                                                                    fillOpacity = 0.5,
-                                                                                 bringToFront = TRUE))
-   
-   #poland<-addPolygons(data=granice)
-   #writeOGR(granice, 'pola')
+                                                                                 bringToFront = TRUE),
+                 label = etykiety) %>% 
+                 addLegend(pal = pal, values = wybraneImie3$wybrane_imie, opacity = 0.5, position = "topright")) 
   })
   
   observe({

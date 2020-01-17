@@ -1,14 +1,14 @@
 library(shiny)
 library(raster)
-#library(maps)
-#library(mapdata)
 library(OpenStreetMap)
-library(ggplot2)
+#library(ggplot2)
 library(leaflet)
 library(osmdata)
 library(rgdal)
 library(sf)
 library(xlsx)
+library(dplyr)
+library(plotrix)
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
   
@@ -47,13 +47,8 @@ ui <- fluidPage(
                    column(3,selectInput(inputId = "wyborRoku", label = "Wybierz rok:", choices = list("2000" = 2000, "2001" = 2001, "2002" = 2002, "2003" = 2003, "2004" = 2004, "2005" = 2005, "2006" = 2006, "2007" = 2007, "2008" = 2008, "2009" = 2009, "2010" = 2010, "2011" = 2011, "2012" = 2012, "2013" = 2013, "2014" = 2014, "2015" = 2015, "2016" = 2016, "2017" = 2017, "2018" = 2018), , selected = NULL, multiple = FALSE, selectize = FALSE)),
                    column(4,tableOutput(outputId = "Top10M")),
                    column(5,tableOutput(outputId = "Top10K")),
+                   plotOutput(outputId= "pie", width =750, height = 750 ),
                    )),
-        tabPanel("Rok",
-                 fluidRow(
-                   column(3,selectInput(inputId = "Rok", label = "Wybierz rok:", choices = list("2000" = 2000, "2001" = 2001, "2002" = 2002, "2003" = 2003, "2004" = 2004, "2005" = 2005, "2006" = 2006, "2007" = 2007, "2008" = 2008, "2009" = 2009, "2010" = 2010, "2011" = 2011, "2012" = 2012, "2013" = 2013, "2014" = 2014, "2015" = 2015, "2016" = 2016, "2017" = 2017, "2018" = 2018), , selected = NULL, multiple = FALSE, selectize = FALSE)),
-                  #column(12,plotOutput(outputId = "pie")),
-                  plotOutput(outputId= "pie", width =750, height = 750 ),
-                 )),
        tabPanel("Trendy",
                 fluidRow(
                   column(3,textInput("imieT","Wpisz imie",value = "ANDRZEJ")),
@@ -63,6 +58,8 @@ ui <- fluidPage(
        ),
        tabPanel("Mapa",
                 fluidRow(
+                  column(3,textInput("imieM","Wpisz imie",value = "ANDRZEJ")),
+                  column(9,actionButton("goM", "MAPA")),
                   column(12,leafletOutput(outputId = "mapapolski", width = 750, height = 750))
                 ))
       ),
