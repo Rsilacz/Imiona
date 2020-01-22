@@ -62,6 +62,7 @@ ui <- fluidPage(
        tabPanel("Mapa",
                 fluidRow(
                   column(3,textInput("imieM","Wpisz imie",value = "ANDRZEJ")),
+                  column(3,selectInput(inputId = "wyborM", label = "Wybierz rok:", choices = list("2013" = 2013, "2014" = 2014, "2015" = 2015, "2016" = 2016, "2017" = 2017), , selected = NULL, multiple = FALSE, selectize = FALSE)),
                   column(9,actionButton("goM", "MAPA")),
                   column(12,leafletOutput(outputId = "mapapolski", width = 750, height = 750))
                 ))
