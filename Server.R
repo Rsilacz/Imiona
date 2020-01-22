@@ -1,9 +1,26 @@
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
-  daneImiona<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  daneImiona2017<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  daneImiona2016<-read.xlsx('im_2016.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  daneImiona2015<-read.xlsx('im_2015.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  daneImiona2014<-read.xlsx('im_2014.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  daneImiona2013<-read.xlsx('im_2013.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+
   
+  
+  observeEvent(input$wyborR,{
+    if(input$wyborR >= 2013){
+      shinyjs::show(id = "wyborWoj")
+      print("show")
+    }else{
+      shinyjs::hide(id = "wyborWoj")
+      print("hide")
+    }
+    
+  })
+    
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
@@ -22,8 +39,8 @@ server <- function(input, output) {
     #print(YMinusSrednia)
     tMSxYMS<-tMinusSrednia*YMinusSrednia
     tMSxtMS<-tMinusSrednia*tMinusSrednia
-    print(tMSxYMS)
-    print(tMSxtMS)
+    #print(tMSxYMS)
+    #print(tMSxtMS)
     aLicznik<-sum(tMSxYMS)
     aMianownik<-sum(tMSxtMS)
     a=aLicznik/aMianownik
@@ -38,12 +55,16 @@ server <- function(input, output) {
     Y<-max(Andrzej[[3]])
     #print(Y)
     AndrzejX <- Andrzej[[3]]
+    
     AndrzejY <- Andrzej[[1]]
     isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+500),
                     xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion",
                     main = paste("Imie ",toupper(input$imie)," w latach 2000-2018")))
     output$wybranyRok <- renderPrint({ input$wyborRoku })
   })
+  
+  
+  
   
    output$Top10M<- renderTable({
     wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
@@ -94,9 +115,9 @@ server <- function(input, output) {
     #print(odchylenie)
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
-    print(wybraneImieX)
-    print(wybraneImieY)
-    print(wybraneImie)
+    #print(wybraneImieX)
+    #print(wybraneImieY)
+    #print(wybraneImie)
     plot(wybraneImieX, wybraneImieY, type = "b")
     obliczonyTrend<-wyliczTrend(wybraneImie)
     if(obliczonyTrend < 0){
