@@ -1,25 +1,29 @@
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
-  daneImiona2017<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+ daneImiona2017<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2016<-read.xlsx('im_2016.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2015<-read.xlsx('im_2015.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2014<-read.xlsx('im_2014.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2013<-read.xlsx('im_2013.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
-  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+  #granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
 
   
+ 
+ 
   
-  observeEvent(input$wyborR,{
-    if(input$wyborR >= 2013){
-      shinyjs::show(id = "wyborWoj")
-      print("show")
-    }else{
-      shinyjs::hide(id = "wyborWoj")
-      print("hide")
-    }
+ 
+ 
+  #observeEvent(input$wyborR,{
+   # if(input$wyborR >= 2013){
+    #  shinyjs::show(id = "wyborWoj")
     
-  })
+    #}else{
+    #  shinyjs::hide(id = "wyborWoj")
+     
+    #}
+    
+  #})
     
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
@@ -48,16 +52,113 @@ server <- function(input, output) {
     return(a)
   }
   
+
+  
   output$distPlot <- renderPlot({
     input$go
     isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
-    Andrzej <- xx[grep(X, xx[[2]]),]
-    Y<-max(Andrzej[[3]])
-    #print(Y)
-    AndrzejX <- Andrzej[[3]]
+  
     
-    AndrzejY <- Andrzej[[1]]
-    isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+500),
+    
+    
+    #Andrzej <- xx[grep(X, xx[[2]]),]
+    #Y<-max(Andrzej[[3]])
+    #print(Y)
+    #AndrzejX <- Andrzej[[3]]
+    if(input$wyborWoj == 1){
+      Andrzej <- xx[grep(X, xx[[2]]),]
+      Y<-max(Andrzej[[3]])
+      AndrzejX <- Andrzej[[3]]
+      AndrzejY <- Andrzej[[1]]
+      #print(AndrzejX)
+      #print(AndrzejY)
+      #print(daneImiona2013$JAKUB[2])
+    }
+    else{
+      AndrzejY <-c(2013,2014,2015,2016,2017)
+      print(AndrzejY)
+      aa<-input$wyborWoj
+      print(aa)
+      if(aa == 2){
+        choice<-9
+      }
+      if(aa == 3){
+        choice<-7
+      }
+      if(aa == 4){
+        choice<-16
+      }
+      if(aa == 5){
+        choice<-17
+      }
+      if(aa == 6){
+        choice<-14
+      }
+      if(aa == 7){
+        choice<-11
+      }
+      if(aa == 8){
+        choice<-15
+      }
+      if(aa == 9){
+        choice<-3
+      }
+      if(aa == 10){
+        choice<-10
+      }
+      if(aa == 11){
+        choice<-8
+      }
+      if(aa == 12){
+        choice<-12
+      }
+      if(aa == 13){
+        choice<-2
+      }
+      if(aa == 14){
+        choice<-6
+      }
+      if(aa == 15){
+        choice<-13
+      }
+      if(aa == 16){
+        choice<-4
+      }
+      if(aa == 17){
+        choice<-5
+      }
+      choice<- choice-1
+      print(choice)
+      X<-toupper(input$imie)
+      print(X)
+      
+      print("2013")
+      print(daneImiona2013[choice,X])
+      print("2014")
+      print(daneImiona2014[choice,X])
+      print("2015")
+      print(daneImiona2015[choice,X])
+      print("2016")
+      print(daneImiona2016[choice,X])
+      print("2017")
+      print(daneImiona2017[choice,X])
+      
+      
+      
+      #choice<-switch(aa,1,9,7,16,17,14,11,15,3,10,8,12,2,6,13,4,5)
+      AndrzejX<-c(daneImiona2013[choice,X],
+                  daneImiona2014[choice,X],
+                  daneImiona2015[choice,X],
+                  daneImiona2016[choice,X],
+                  daneImiona2017[choice,X])
+      print(AndrzejX)
+      Y<-max(AndrzejX)
+      print(Y)
+    }
+    
+    
+    #AndrzejY <- Andrzej[[1]]
+    isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+50),
                     xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion",
                     main = paste("Imie ",toupper(input$imie)," w latach 2000-2018")))
     output$wybranyRok <- renderPrint({ input$wyborRoku })
@@ -137,23 +238,8 @@ server <- function(input, output) {
    isolate(X <- paste(toupper(input$imieM))) 
    # X = "ANDRZEJ"
     #wybraneImie <- daneImiona[grep("MARCIN", daneImiona[[1]]),]
-    #wybraneImie2 <- select(daneImiona, "ANDRZEJ")
-    if(input$wyborM == 2013){
-      wybraneImie3 <- daneImiona2013[grep(X, names(daneImiona2013), value = TRUE)]
-    }
-   if(input$wyborM == 2014){
-     wybraneImie3 <- daneImiona2014[grep(X, names(daneImiona2014), value = TRUE)]
-   }
-   if(input$wyborM == 2015){
-     wybraneImie3 <- daneImiona2015[grep(X, names(daneImiona2015), value = TRUE)]
-   }
-   if(input$wyborM == 2016){
-     wybraneImie3 <- daneImiona2016[grep(X, names(daneImiona2016), value = TRUE)]
-   }
-   if(input$wyborM == 2017){
-     wybraneImie3 <- daneImiona2017[grep(X, names(daneImiona2017), value = TRUE)]
-   }
-    
+    wybraneImie2 <- select(daneImiona, "ANDRZEJ")
+    wybraneImie3 <- daneImiona[grep(X, names(daneImiona), value = TRUE)]
     colnames(wybraneImie3) <-("wybrane_imie")
     skala<-c(2,10,20,40,50,100,200,300,600)
     skalaAndrzej<-c(2,4,8,16,32,64,128,256,512,1024,2048)
