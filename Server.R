@@ -235,11 +235,33 @@ server <- function(input, output) {
   
   output$mapapolski<-renderLeaflet({
     input$goM
-   isolate(X <- paste(toupper(input$imieM))) 
+   #isolate(X <- paste(toupper(input$imieM)),encoding = "UTF-8") 
+   isolate(X <- paste("^",toupper(input$imieM),"$",sep = ""))
+    #isolate(X<-paste(toupper(input$imieM)))
+    print("normalny")
+   print(X)
+   isolate(X<-iconv(X, from = "", to ="ASCII", sub=""))
+   print("zmodyfikowany")
+   print(X)
    # X = "ANDRZEJ"
     #wybraneImie <- daneImiona[grep("MARCIN", daneImiona[[1]]),]
-    wybraneImie2 <- select(daneImiona, "ANDRZEJ")
-    wybraneImie3 <- daneImiona[grep(X, names(daneImiona), value = TRUE)]
+    #wybraneImie2 <- select(daneImiona, "ANDRZEJ")
+    if(input$wyborM == 2013){
+      wybraneImie3 <- daneImiona2013[grep(X, names(daneImiona2013), value = TRUE)]
+    }
+   if(input$wyborM == 2014){
+     wybraneImie3 <- daneImiona2014[grep(X, names(daneImiona2014), value = TRUE)]
+   }
+   if(input$wyborM == 2015){
+     wybraneImie3 <- daneImiona2015[grep(X, names(daneImiona2015), value = TRUE)]
+   }
+   if(input$wyborM == 2016){
+     wybraneImie3 <- daneImiona2016[grep(X, names(daneImiona2016), value = TRUE)]
+   }
+   if(input$wyborM == 2017){
+     wybraneImie3 <- daneImiona2017[grep(X, names(daneImiona2017), value = TRUE)]
+   }
+    
     colnames(wybraneImie3) <-("wybrane_imie")
     skala<-c(2,10,20,40,50,100,200,300,600)
     skalaAndrzej<-c(2,4,8,16,32,64,128,256,512,1024,2048)
