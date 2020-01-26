@@ -37,7 +37,11 @@ ui <- fluidPage(
                    column(4,tableOutput(outputId = "Top10M")),
                    column(5,tableOutput(outputId = "Top10K")),
                    column(3,selectInput(inputId = "wyborRoku", label = "Wybierz rok:", choices = list("2000" = 2000, "2001" = 2001, "2002" = 2002, "2003" = 2003, "2004" = 2004, "2005" = 2005, "2006" = 2006, "2007" = 2007, "2008" = 2008, "2009" = 2009, "2010" = 2010, "2011" = 2011, "2012" = 2012, "2013" = 2013, "2014" = 2014, "2015" = 2015, "2016" = 2016, "2017" = 2017, "2018" = 2018), , selected = 2000, multiple = FALSE, selectize = FALSE)),
-                   column(3,selectInput( inputId = "wyborW", label = "Wybierz Woj:", choices = list("Polska" = 1, "Dolnoslakie" = 2, "Kujawsko-pomorskie" = 3, "Lubelskie" = 4, "Lubuskie" = 5, "Lodzkie" = 6, "Malopolskie" = 7, "Mazowieckie" = 8, "Opolskie" = 9, "Podkarpackie" = 10, "Podlaskie" = 11, "Pomorskie" = 12, "Slaskie" = 13, "Swietokrzyskie" = 14, "Warminsko-mazurskie" = 15, "Wielkopolskie" = 16, "Zachodniopomorskie" = 17) , selected = 1, multiple = FALSE, selectize = FALSE)),
+                   column(3,selectInput( inputId = "wyborW", label = "Wybierz Woj:", choices = list("Polska" = "Polska", "Dolnoslakie" = "Dolnoslakie", "Kujawsko-pomorskie" = "Kujawsko-pomorskie"
+                                                                                                    , "Lubelskie" ="Lubelskie", "Lubuskie" = "Lubuskie", "Lodzkie" = "Lodzkie", "Malopolskie" = "Malopolskie"
+                                                                                                    , "Mazowieckie" = "Mazowieckie", "Opolskie" = "Opolskie", "Podkarpackie" = "Podkarpackie"
+                                                                                                    , "Podlaskie" = "Podlaskie", "Pomorskie" = "Pomorskie", "Slaskie" = "Slaskie", "Swietokrzyskie" ="Swietokrzyskie", "Warminsko-mazurskie" = "Warminsko-mazurskie"
+                                                                                                    , "Wielkopolskie" = "Wielkopolskie", "Zachodniopomorskie" ="Zachodniopomorskie") , selected ="Dolnoslakie", multiple = FALSE, selectize = FALSE)),
                    plotOutput(outputId= "pie", width =750, height = 750 ),
                    )),
        tabPanel("Trendy",

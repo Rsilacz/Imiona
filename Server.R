@@ -1,6 +1,9 @@
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
+  TOP <- read.csv('TOP.csv',TRUE,sep=",",encoding = "UTF-8", row.names = NULL)
+
+  
  daneImiona2017<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2016<-read.xlsx('im_2016.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2015<-read.xlsx('im_2015.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
@@ -11,17 +14,9 @@ server <- function(input, output) {
   
   
   
-  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+  #granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
 
-  G<-paste("M$",sep="")
-  AAA<-grep(G,colnames(daneImiona2013))
-  C<-daneImiona2013[1,AAA]
-  C<-sort(C,decreasing = TRUE)
   
-  C<-C[1:10]
-  
-  print(C)
-  print("DONE")
   
   
  
@@ -181,23 +176,40 @@ server <- function(input, output) {
   })
   
    output$Top10M<- renderTable({
-   
+     if(input$wyborRoku >= 2013 && input$wyborRoku < 2018 && input$wyborW != "Polska"){
+       wybractop10M<-TOP[grep(input$wyborRoku,TOP[[1]]),]
+       wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
+       wybractop10M<-wybractop10M[grep(input$wyborW, wybractop10M[[5]]),]
+       to10M<-wybractop10M[1:10,]
+       
+       
+     }
+     else{
     wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
     wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
-  
-    print(wybractop10M)
     to10M<-wybractop10M[1:10,]
     print(to10M)
 
-     
+     }
   })
   
   output$Top10K<- renderTable({
+    if(input$wyborRoku >= 2013 && input$wyborRoku < 2018  && input$wyborW!="Polska") {
+      wybractop10K<-TOP[grep(input$wyborRoku, TOP[[1]]),]
+      wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
+      wybractop10K<-wybractop10K[grep(input$wyborW, wybractop10K[[5]]),]
+      to10K<-wybractop10K[1:10,]
+      
+      
+    }
+    else{
+    
     wybractop10K<-xx[grep(input$wyborRoku, xx[[1]]),]
     wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
     #print(wybractop10)
     to10K<-wybractop10K[1:10,]
     #print(to10K)
+    }
   })
   
   output$pie <- renderPlot({
