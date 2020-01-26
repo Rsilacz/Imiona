@@ -2,25 +2,15 @@
 server <- function(input, output) {
   xx <- read.csv(url("https://api.dane.gov.pl/media/resources/20190408/Imiona_nadane_wPolsce_w_latach_2000-2018.csv"), TRUE, sep = ",", encoding = "UTF-8")
   TOP <- read.csv('TOP.csv',TRUE,sep=",",encoding = "UTF-8", row.names = NULL)
-
   
- daneImiona2017<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
+  daneImiona2017<-read.xlsx('im_2017.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2016<-read.xlsx('im_2016.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2015<-read.xlsx('im_2015.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2014<-read.xlsx('im_2014.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2013<-read.xlsx('im_2013.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   
+  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
   
-  
-  
-  
-  #granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
-
-  
-  
-  
- 
-
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
@@ -30,37 +20,18 @@ server <- function(input, output) {
     Y=wybraneImieY
     sredniaT<-mean(t)
     sredniaY<-mean(Y)
-    #print(t)
-    #print(sredniaT)
-    #print(sredniaY)
     tMinusSrednia<-t-sredniaT
     YMinusSrednia<-Y-sredniaY
-    #print(tMinusSrednia)
-    #print(YMinusSrednia)
     tMSxYMS<-tMinusSrednia*YMinusSrednia
     tMSxtMS<-tMinusSrednia*tMinusSrednia
-    #print(tMSxYMS)
-    #print(tMSxtMS)
     aLicznik<-sum(tMSxYMS)
     aMianownik<-sum(tMSxtMS)
     a=aLicznik/aMianownik
-    print(a)
     return(a)
   }
   
-
-  
   output$distPlot <- renderPlot({
     input$go
-    #isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
-  
-    
-    
-    
-    #Andrzej <- xx[grep(X, xx[[2]]),]
-    #Y<-max(Andrzej[[3]])
-    #print(Y)
-    #AndrzejX <- Andrzej[[3]]
     if(input$wyborWoj == 1){
       isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
       Andrzej <- xx[grep(X, xx[[2]]),]
@@ -74,9 +45,7 @@ server <- function(input, output) {
       napis<-"Lata 2013-2017"
       napis_d <- " w latach 2013-2017"
       AndrzejY <-c(2013,2014,2015,2016,2017)
-      print(AndrzejY)
       aa<-input$wyborWoj
-      print(aa)
       if(aa == 2){
         choice<-9
       }
@@ -126,45 +95,22 @@ server <- function(input, output) {
         choice<-5
       }
       choice<- choice-1
-      print(choice)
       
-
       XX<-paste("^",toupper(input$imie),"_",sep="")
       X<-grep(XX,colnames(daneImiona2013),value=TRUE)
-      #print(colnames(daneImiona2013))
-      
-      print("2013")
-      print(daneImiona2013[choice,X])
-      print("2014")
-      print(daneImiona2014[choice,X])
-      print("2015")
-      print(daneImiona2015[choice,X])
-      print("2016")
-      print(daneImiona2016[choice,X])
-      print("2017")
-      print(daneImiona2017[choice,X])
-      
-      
-      
-      #choice<-switch(aa,1,9,7,16,17,14,11,15,3,10,8,12,2,6,13,4,5)
       AndrzejX<-c(daneImiona2013[choice,X],
                   daneImiona2014[choice,X],
                   daneImiona2015[choice,X],
                   daneImiona2016[choice,X],
                   daneImiona2017[choice,X])
-      print(AndrzejX)
       Y<-max(AndrzejX)
-      print(Y)
     }
     
-    
-    #AndrzejY <- Andrzej[[1]]
     isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+50),
-                    xlab = napis, ylab="Ilosc nadanych imion",
-                    main = paste("Imie ",toupper(input$imie),napis_d)))
+                    xlab = napis, ylab="Ilość nadanych imion", col=rgb(0.2,0.4,0.6,0.6),
+                    main = paste("Imię ",toupper(input$imie),napis_d)))
     output$wybranyRok <- renderPrint({ input$wyborRoku })
   })
-  
   
   observeEvent(input$wyborRoku,{
     if(input$wyborRoku >= 2013 && input$wyborRoku < 2018){
@@ -175,22 +121,19 @@ server <- function(input, output) {
     }
   })
   
-   output$Top10M<- renderTable({
-     if(input$wyborRoku >= 2013 && input$wyborRoku < 2018 && input$wyborW != "Polska"){
-       wybractop10M<-TOP[grep(input$wyborRoku,TOP[[1]]),]
-       wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
-       wybractop10M<-wybractop10M[grep(input$wyborW, wybractop10M[[5]]),]
-       to10M<-wybractop10M[1:10,]
-       
-       
-     }
-     else{
-    wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
-    wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
-    to10M<-wybractop10M[1:10,]
-    print(to10M)
-
-     }
+  output$Top10M<- renderTable({
+    if(input$wyborRoku >= 2013 && input$wyborRoku < 2018 && input$wyborW != "Polska"){
+      wybractop10M<-TOP[grep(input$wyborRoku,TOP[[1]]),]
+      wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
+      wybractop10M<-wybractop10M[grep(input$wyborW, wybractop10M[[5]]),]
+      to10M<-wybractop10M[1:10,]
+    }
+    else{
+      wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
+      wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
+      to10M<-wybractop10M[1:10,]
+      print(to10M)
+    }
   })
   
   output$Top10K<- renderTable({
@@ -199,16 +142,11 @@ server <- function(input, output) {
       wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
       wybractop10K<-wybractop10K[grep(input$wyborW, wybractop10K[[5]]),]
       to10K<-wybractop10K[1:10,]
-      
-      
     }
     else{
-    
-    wybractop10K<-xx[grep(input$wyborRoku, xx[[1]]),]
-    wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
-    #print(wybractop10)
-    to10K<-wybractop10K[1:10,]
-    #print(to10K)
+      wybractop10K<-xx[grep(input$wyborRoku, xx[[1]]),]
+      wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
+      to10K<-wybractop10K[1:10,]
     }
   })
   
@@ -224,10 +162,10 @@ server <- function(input, output) {
     print(LWman)
     slices <- c(Lman, LWman)
     pct <- round(slices/sum(slices)*100,digits = 2)
-    lbls <- c("Mezczyzni", "Kobiety")
+    lbls <- c("Mężczyźni", "Kobiety")
     lbls <- paste(lbls, pct) 
     lbls <- paste(lbls,"%",sep="") 
-    pie3D(slices, labels = lbls, main="M vs K",col = c("red","green"))
+    pie3D(slices, labels = lbls, main="Procentowy rozkład płci",col = c("red","green"), radius = 1)
   })
   
   output$trend <- renderPlot({
@@ -237,74 +175,54 @@ server <- function(input, output) {
     srednia <- mean(wartosciWybranegoImienia)
     wariancja <- var(wartosciWybranegoImienia)
     odchylenie <- sd(wartosciWybranegoImienia)
-    #print("srednia")
-    #print(srednia)
-    #print("wariancja")
-    #print(wariancja)
-    #print("odchylenie")
-    #print(odchylenie)
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
-    #print(wybraneImieX)
-    #print(wybraneImieY)
-    #print(wybraneImie)
-    plot(wybraneImieX, wybraneImieY, type = "b")
+    plot(wybraneImieX, wybraneImieY, type = "b", col=rgb(0.2,0.4,0.6,0.6), lwd=5, xlab="Kolejne lata", ylab="Ilość nadanych imion" )
     obliczonyTrend<-wyliczTrend(wybraneImie)
     if(obliczonyTrend < 0){
       output$trendtxt <- renderText("Trend maleje")
     }
     if(obliczonyTrend == 0){
-      output$trendtxt <- renderText("Trend jest staly")
+      output$trendtxt <- renderText("Trend jest stały")
     }
     if(obliczonyTrend > 0){
-      output$trendtxt <- renderText("Trend rosnie")
+      output$trendtxt <- renderText("Trend rośnie")
     }
-    #plot()
   })
   
   output$mapapolski<-renderLeaflet({
-    input$goM
-   #isolate(X <- paste(toupper(input$imieM)),encoding = "UTF-8") 
-   isolate(X <- paste("^",toupper(input$imieM),"_",sep = ""))
-    #isolate(X<-paste(toupper(input$imieM)))
-    print("normalny")
-   print(X)
-   isolate(X<-iconv(X, from = "", to ="ASCII", sub=""))
-   print("zmodyfikowany")
-   print(X)
-   # X = "ANDRZEJ"
-    #wybraneImie <- daneImiona[grep("MARCIN", daneImiona[[1]]),]
-    #wybraneImie2 <- select(daneImiona, "ANDRZEJ")
+    input$goM 
+    isolate(X <- paste("^",toupper(input$imieM),"_",sep = ""))
     if(input$wyborM == 2013){
       wybraneImie3 <- daneImiona2013[grep(X, names(daneImiona2013), value = TRUE)]
     }
-   if(input$wyborM == 2014){
-     wybraneImie3 <- daneImiona2014[grep(X, names(daneImiona2014), value = TRUE)]
-   }
-   if(input$wyborM == 2015){
-     wybraneImie3 <- daneImiona2015[grep(X, names(daneImiona2015), value = TRUE)]
-   }
-   if(input$wyborM == 2016){
-     wybraneImie3 <- daneImiona2016[grep(X, names(daneImiona2016), value = TRUE)]
-   }
-   if(input$wyborM == 2017){
-     wybraneImie3 <- daneImiona2017[grep(X, names(daneImiona2017), value = TRUE)]
-   }
+    if(input$wyborM == 2014){
+      wybraneImie3 <- daneImiona2014[grep(X, names(daneImiona2014), value = TRUE)]
+    }
+    if(input$wyborM == 2015){
+      wybraneImie3 <- daneImiona2015[grep(X, names(daneImiona2015), value = TRUE)]
+    }
+    if(input$wyborM == 2016){
+      wybraneImie3 <- daneImiona2016[grep(X, names(daneImiona2016), value = TRUE)]
+    }
+    if(input$wyborM == 2017){
+      wybraneImie3 <- daneImiona2017[grep(X, names(daneImiona2017), value = TRUE)]
+    }
     
     colnames(wybraneImie3) <-("wybrane_imie")
     skala<-c(2,10,20,40,50,100,200,300,600)
     skalaAndrzej<-c(2,4,8,16,32,64,128,256,512,1024,2048)
     pal<-colorBin("Spectral", domain = wybraneImie3$wybrane_imie, bins = skalaAndrzej)
     etykiety<-(wybraneImie3$wybrane_imie)
-  isolate(poland<-leaflet() %>%
-     addTiles() %>%
-     setView(19.313,52.278, zoom = 6) %>%
-     addPolygons(data = granice, fillColor = pal(wybraneImie3$wybrane_imie), fillOpacity = 0.8, color = "white",
-                 smoothFactor = 1, highlight = highlightOptions(weight = 5, color = "red",
-                                                                                   fillOpacity = 0.5,
-                                                                                 bringToFront = TRUE),
-                 label = etykiety) %>% 
-                 addLegend(pal = pal, values = wybraneImie3$wybrane_imie, opacity = 0.5, position = "topright")) 
+    isolate(poland<-leaflet() %>%
+              addTiles() %>%
+              setView(19.313,52.278, zoom = 6) %>%
+              addPolygons(data = granice, fillColor = pal(wybraneImie3$wybrane_imie), fillOpacity = 0.8, color = "white",
+                          smoothFactor = 1, highlight = highlightOptions(weight = 5, color = "red",
+                                                                         fillOpacity = 0.5,
+                                                                         bringToFront = TRUE),
+                          label = etykiety) %>% 
+              addLegend(pal = pal, values = wybraneImie3$wybrane_imie, opacity = 0.5, position = "topright")) 
   })
   
   observe({
