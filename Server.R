@@ -6,25 +6,26 @@ server <- function(input, output) {
   daneImiona2015<-read.xlsx('im_2015.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2014<-read.xlsx('im_2014.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2013<-read.xlsx('im_2013.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
-  #granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+  
+  
+  
+  
+  
+  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
 
+  G<-paste("M$",sep="")
+  AAA<-grep(G,colnames(daneImiona2013))
+  C<-daneImiona2013[1,AAA]
+  C<-sort(C,decreasing = TRUE)
+  
+  C<-C[1:10]
+  
+  print(C)
+  print("DONE")
+  
   
  
- 
-  
- 
- 
-  #observeEvent(input$wyborR,{
-   # if(input$wyborR >= 2013){
-    #  shinyjs::show(id = "wyborWoj")
-    
-    #}else{
-    #  shinyjs::hide(id = "wyborWoj")
-     
-    #}
-    
-  #})
-    
+
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
     wybraneImieY <- wybraneImie[[3]]
@@ -56,7 +57,7 @@ server <- function(input, output) {
   
   output$distPlot <- renderPlot({
     input$go
-    isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
+    #isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
   
     
     
@@ -66,15 +67,17 @@ server <- function(input, output) {
     #print(Y)
     #AndrzejX <- Andrzej[[3]]
     if(input$wyborWoj == 1){
+      isolate(X <- paste("^",toupper(input$imie),"$",sep = ""))
       Andrzej <- xx[grep(X, xx[[2]]),]
       Y<-max(Andrzej[[3]])
       AndrzejX <- Andrzej[[3]]
       AndrzejY <- Andrzej[[1]]
-      #print(AndrzejX)
-      #print(AndrzejY)
-      #print(daneImiona2013$JAKUB[2])
+      napis<-"Lata 2000-2018"
+      napis_d <-" w latach 2000-2018"
     }
     else{
+      napis<-"Lata 2013-2017"
+      napis_d <- " w latach 2013-2017"
       AndrzejY <-c(2013,2014,2015,2016,2017)
       print(AndrzejY)
       aa<-input$wyborWoj
@@ -129,8 +132,11 @@ server <- function(input, output) {
       }
       choice<- choice-1
       print(choice)
-      X<-toupper(input$imie)
-      print(X)
+      
+
+      XX<-paste("^",toupper(input$imie),"_",sep="")
+      X<-grep(XX,colnames(daneImiona2013),value=TRUE)
+      #print(colnames(daneImiona2013))
       
       print("2013")
       print(daneImiona2013[choice,X])
@@ -159,20 +165,31 @@ server <- function(input, output) {
     
     #AndrzejY <- Andrzej[[1]]
     isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+50),
-                    xlab = "Lata 2000-2018", ylab="Ilosc nadanych imion",
-                    main = paste("Imie ",toupper(input$imie)," w latach 2000-2018")))
+                    xlab = napis, ylab="Ilosc nadanych imion",
+                    main = paste("Imie ",toupper(input$imie),napis_d)))
     output$wybranyRok <- renderPrint({ input$wyborRoku })
   })
   
   
-  
+  observeEvent(input$wyborRoku,{
+    if(input$wyborRoku >= 2013 && input$wyborRoku < 2018){
+      shinyjs::show(id = "wyborW")
+    }
+    else{
+      shinyjs::hide(id="wyborW")
+    }
+  })
   
    output$Top10M<- renderTable({
+   
     wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
     wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
-   #print(wybractop10)
+  
+    print(wybractop10M)
     to10M<-wybractop10M[1:10,]
-    #print(to10M)
+    print(to10M)
+
+     
   })
   
   output$Top10K<- renderTable({
@@ -198,7 +215,7 @@ server <- function(input, output) {
     lbls <- c("Mezczyzni", "Kobiety")
     lbls <- paste(lbls, pct) 
     lbls <- paste(lbls,"%",sep="") 
-    pie3D(slices, labels = lbls, main="M vs K",col = rainbow(length(slices)))
+    pie3D(slices, labels = lbls, main="M vs K",col = c("red","green"))
   })
   
   output$trend <- renderPlot({
@@ -236,7 +253,7 @@ server <- function(input, output) {
   output$mapapolski<-renderLeaflet({
     input$goM
    #isolate(X <- paste(toupper(input$imieM)),encoding = "UTF-8") 
-   isolate(X <- paste("^",toupper(input$imieM),"$",sep = ""))
+   isolate(X <- paste("^",toupper(input$imieM),"_",sep = ""))
     #isolate(X<-paste(toupper(input$imieM)))
     print("normalny")
    print(X)
