@@ -9,7 +9,7 @@ server <- function(input, output) {
   daneImiona2014<-read.xlsx('im_2014.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2013<-read.xlsx('im_2013.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   
-  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+  #granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
   
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
@@ -150,7 +150,7 @@ server <- function(input, output) {
     }
   })
   
-  output$pie <- renderPlot({
+  output$pieChart <- renderPlot({
     zmienna <- xx[grep(input$wyborRoku,xx[[1]]),]
     man <- zmienna[grep("M", zmienna[[4]]),]
     wman <- zmienna[grep("K", zmienna[[4]]),]

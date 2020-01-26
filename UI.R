@@ -23,10 +23,18 @@ ui <- fluidPage(theme = "united",
 
                          body {
                             background-color: #F0F0F0;
-                         }")
+                         }"),
+      ("#trendtxt{color: #85a3c2;
+                  font-size: 32px;
+                  font-style: bold;
+                  margin: auto;
+                  text-align: center;}"),
+      ("#pieChart{
+        align: center;
+        margin: auto;
+      }")
     )
   ),
-  
   # Sidebar layout with input and output definitions ----
   sidebarLayout(NULL,
                 
@@ -34,7 +42,7 @@ ui <- fluidPage(theme = "united",
                 
                 
                 # Main panel for displaying outputs ----
-                mainPanel(width="100%", style="margin-left:50px;",
+                mainPanel(width="100%", style="margin-left:50px; margin-right:50px;",
                   tabsetPanel(
                     tabPanel("Wyszukiwanie imion",
                              fluidRow(
@@ -53,13 +61,13 @@ ui <- fluidPage(theme = "united",
                                                                                                                 , "Mazowieckie" = "Mazowieckie", "Opolskie" = "Opolskie", "Podkarpackie" = "Podkarpackie"
                                                                                                                 , "Podlaskie" = "Podlaskie", "Pomorskie" = "Pomorskie", "Śląskie" = "Slaskie", "Świętokrzyskie" ="Swietokrzyskie", "Warmińsko-mazurskie" = "Warminsko-mazurskie"
                                                                                                                 , "Wielkopolskie" = "Wielkopolskie", "Zachodniopomorskie" ="Zachodniopomorskie") , selected ="Dolnośląskie", multiple = FALSE, selectize = FALSE)),
-                               plotOutput(outputId= "pie", width =450, height = 450 ),
+                               column(12,plotOutput(outputId= "pieChart", width =450, height = 450 )),
                              )),
                     tabPanel("Trendy",
                              fluidRow(
                                column(3,textInput("imieT","Wpisz imię",value = "ANDRZEJ")),
                                column(12, plotOutput(outputId = "trend")),
-                               column(3,textOutput(outputId="trendtxt")),
+                               column(12,textOutput(outputId="trendtxt")),
                              )
                     ),
                     tabPanel("Mapa",
