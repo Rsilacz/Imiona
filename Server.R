@@ -9,7 +9,7 @@ server <- function(input, output) {
   daneImiona2014<-read.xlsx('im_2014.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   daneImiona2013<-read.xlsx('im_2013.xlsx', sheetIndex = 1, header = TRUE, encoding = "UTF-8")
   
-  #granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
+  granice<-readOGR(dsn = 'Wojewodztwa\\Wojewodztwa.shp', layer = 'Wojewodztwa', encoding = "UTF-8")
   
   wyliczTrend<-function(wybraneImie){
     wybraneImieX <- wybraneImie[[1]]
@@ -106,7 +106,7 @@ server <- function(input, output) {
       Y<-max(AndrzejX)
     }
     
-    isolate(barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+50),
+    isolate(slupki<-barplot(AndrzejX, space=NULL, names.arg = AndrzejY, ylim=c(0,Y+50),
                     xlab = napis, ylab="Ilość nadanych imion", col=rgb(0.2,0.4,0.6,0.6),
                     main = paste("Imię ",toupper(input$imie),napis_d)))
     output$wybranyRok <- renderPrint({ input$wyborRoku })
@@ -127,6 +127,7 @@ server <- function(input, output) {
       wybractop10M<-wybractop10M[grep("M", wybractop10M[[4]]),]
       wybractop10M<-wybractop10M[grep(input$wyborW, wybractop10M[[5]]),]
       to10M<-wybractop10M[1:10,]
+      to10M<-to10M[-c(5)]
     }
     else{
       wybractop10M<-xx[grep(input$wyborRoku, xx[[1]]),]
@@ -142,6 +143,7 @@ server <- function(input, output) {
       wybractop10K<-wybractop10K[grep("K", wybractop10K[[4]]),]
       wybractop10K<-wybractop10K[grep(input$wyborW, wybractop10K[[5]]),]
       to10K<-wybractop10K[1:10,]
+      to10K<-to10K[-c(5)]
     }
     else{
       wybractop10K<-xx[grep(input$wyborRoku, xx[[1]]),]
@@ -165,7 +167,7 @@ server <- function(input, output) {
     lbls <- c("Mężczyźni", "Kobiety")
     lbls <- paste(lbls, pct) 
     lbls <- paste(lbls,"%",sep="") 
-    pie3D(slices, labels = lbls, main="Procentowy rozkład płci",col = c("red","green"), radius = 1)
+    pie3D(slices, labels = lbls, main="Procentowy rozkład płci w wybranym roku",col = c("red","green"), radius = 1)
   })
   
   output$trend <- renderPlot({

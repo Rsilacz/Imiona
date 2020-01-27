@@ -32,6 +32,24 @@ ui <- fluidPage(theme = "united",
       ("#pieChart{
         align: center;
         margin: auto;
+      }"),
+      ("#Top10M{
+      margin-left: 100px;
+      font-size: 32px;
+      font-style: bold;
+       }"),
+      ("#Top10K{
+      margin-left: 100px;
+      font-size: 32px;
+      font-style: bold;
+       }"),
+      ("#mapapolski{
+       align: center;
+       margin: auto;
+      }"),
+      ("#wyborM{
+       align: right;
+       margin: auto;
       }")
     )
   ),
@@ -61,7 +79,7 @@ ui <- fluidPage(theme = "united",
                                                                                                                 , "Mazowieckie" = "Mazowieckie", "Opolskie" = "Opolskie", "Podkarpackie" = "Podkarpackie"
                                                                                                                 , "Podlaskie" = "Podlaskie", "Pomorskie" = "Pomorskie", "Śląskie" = "Slaskie", "Świętokrzyskie" ="Swietokrzyskie", "Warmińsko-mazurskie" = "Warminsko-mazurskie"
                                                                                                                 , "Wielkopolskie" = "Wielkopolskie", "Zachodniopomorskie" ="Zachodniopomorskie") , selected ="Dolnośląskie", multiple = FALSE, selectize = FALSE)),
-                               column(12,plotOutput(outputId= "pieChart", width =450, height = 450 )),
+                              # column(12,plotOutput(outputId= "pieChart", width =450, height = 450 )),
                              )),
                     tabPanel("Trendy",
                              fluidRow(
@@ -73,7 +91,7 @@ ui <- fluidPage(theme = "united",
                     tabPanel("Mapa",
                              fluidRow(
                                column(3,textInput("imieM","Wpisz imię",value = "ANDRZEJ")),
-                               column(3,selectInput(inputId = "wyborM", label = "Wybierz rok:", choices = list("2013" = 2013, "2014" = 2014, "2015" = 2015, "2016" = 2016, "2017" = 2017), , selected = NULL, multiple = FALSE, selectize = FALSE)),
+                               column(8,selectInput(inputId = "wyborM", label = "Wybierz rok:", choices = list("2013" = 2013, "2014" = 2014, "2015" = 2015, "2016" = 2016, "2017" = 2017), , selected = NULL, multiple = FALSE, selectize = FALSE)),
                                column(9,actionButton("goM", "MAPA")),
                                column(12,leafletOutput(outputId = "mapapolski", width = 750, height = 750))
                              ))
